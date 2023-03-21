@@ -2,7 +2,7 @@ from tkinter import *
 from tkinter import ttk
 from userManagement import userManagement
 
-bdd = userManagement('root', 'IamBatman!567', 'mydiscord')
+bdd = userManagement('root', '*******', 'mydiscord')
 
 def inscription(frame1,frame2):
 
