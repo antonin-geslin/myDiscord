@@ -1,11 +1,11 @@
 from tkinter import *
 from tkinter import ttk
 from userManagement import userManagement
+from testchat import *
 
-bdd = userManagement('root', '*******', 'mydiscord')
+bdd = userManagement('discord', 'abcdeABCDE;12345', 'mydiscord')
 
 def inscription(frame1,frame2):
-
     frame1.pack_forget()
     return frame2.pack()
 
@@ -48,7 +48,7 @@ labelMdp = Label(frame2, text = "Password", font=('Arial', 15))
 labelMdp.place(x=250,y=450)
 entrerMdp = Entry(frame2)
 entrerMdp.place(x=350,y=450,width=300, height=30)
-buttonInscription = Button(frame2, text = "Inscription", font=('Arial', 15), command=lambda: returnToConnexion(frame1, frame2))
+buttonInscription = Button(frame2, text = "Inscription", font=('Arial', 15), command=lambda : returnToConnexion(frame1, frame2))
 buttonInscription.place(x=350, y= 500, width=300)
 frame2.pack_forget()
 
@@ -67,7 +67,7 @@ labelMdp = Label(frame1, text = "Password", font=('Arial', 15))
 labelMdp.place(x=250,y=350)
 entrerMdp = Entry(frame1, show="*")
 entrerMdp.place(x=350,y=350,width=300, height=30)
-buttonConnexion = Button(frame1, text = "Connexion", font=('Arial', 15), command=fenetre.destroy)
+buttonConnexion = Button(frame1, text = "Connexion", font=('Arial', 15), command=lambda : Client('127.0.0.1', 46000).start())
 buttonConnexion.place(x=350, y= 400, width=300)
 
 LabelInscription = Label(frame1, text = "Pas encore inscrit ?", font=('Arial', 10))
@@ -75,12 +75,9 @@ LabelInscription.place(x=400,y=440)
 buttonInscription = Button(frame1, text = "Cliquez ici !", font=('Arial', 10), command=lambda: inscription(frame1, frame2))
 buttonInscription.place(x=490, y= 437)
 
-
-
+def connexion():
+    if bdd.userConnexion == True:
+        client = Client('127.0.0.1', 46000)
+        client.start()
 
 fenetre.mainloop()
-
-fenetre2=Tk()
-fenetre2.title("myDiscord")
-fenetre2.geometry("900x900")
-fenetre2.mainloop()

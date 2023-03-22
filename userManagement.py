@@ -12,8 +12,6 @@ class userManagement():
         self.cursor = self.connexion.cursor()
 
 
-    
-
 
 
     def userInscription(self, nom, prenom, mail, password):
@@ -22,4 +20,17 @@ class userManagement():
         self.cursor.execute(query, values)
         self.connexion.commit()
 
+    def userConnexion(self, mail, password):
+        query = ("SELECT * FROM user WHERE mail = %s AND password = %s")
+        values = (mail, password)
+        self.cursor.execute(query, values)
+        result = self.cursor.fetchall()
+        if result:
+            return True
+        else:
+            return False
 
+
+    def get_username(self, user):
+        self.user = user
+        return self.user
