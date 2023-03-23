@@ -20,17 +20,12 @@ class userManagement():
         self.cursor.execute(query, values)
         self.connexion.commit()
 
-    def userConnexion(self, mail, password):
-        query = ("SELECT * FROM user WHERE mail = %s AND password = %s")
-        values = (mail, password)
-        self.cursor.execute(query, values)
-        result = self.cursor.fetchall()
-        if result:
-            return True
-        else:
-            return False
+    def checkIfUserExist(self, mail):
+        query = f"SELECT * FROM user WHERE mail = '{mail}'"
+        self.cursor.execute(query)
+        return(self.cursor.fetchall())
 
-
-    def get_username(self, user):
-        self.user = user
-        return self.user
+    def checkUserPassword(self, mail):
+        query = f"SELECT password FROM user WHERE mail = '{mail}'"
+        self.cursor.execute(query)
+        return(self.cursor.fetchall()[0][0])

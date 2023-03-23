@@ -6,18 +6,38 @@ from testchat import *
 bdd = userManagement('discord', 'abcdeABCDE;12345', 'mydiscord')
 
 def inscription(frame1,frame2):
+
     frame1.pack_forget()
     return frame2.pack()
 
 
 def returnToConnexion(frame1, frame2):
+    regex = r'\b[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\.[A-Z|a-z]{2,7}\b'
     nom = entrerNom.get()
     prenom = entrerPrenom.get()
+    mail = entrerMailInscription.get()
+    password = entrerMdpInscription.get()
+    if re.fullmatch(regex, mail):
+        bdd.userInscription(nom, prenom, mail, password)
+        frame2.pack_forget()
+        return frame1.pack()
+    else:
+        labelError = Label(frame2, text = "Mail invalide", font=('Arial', 15))
+        labelError.place(x=450,y=600)
+
+
+def connexion(fenetre):
     mail = entrerMail.get()
     password = entrerMdp.get()
-    bdd.userInscription(nom, prenom, mail, password)
-    frame2.pack_forget()
-    return frame1.pack()
+    if bdd.checkIfUserExist(mail) == []:
+        labelError = Label(frame1, text = "Mail inconnu", font=('Arial', 15))
+        labelError.place(x=450,y=600)
+    elif bdd.checkUserPassword(mail) != password:
+        labelError = Label(frame1, text = "Mot de passe incorrect", font=('Arial', 15))
+        labelError.place(x=450,y=600)
+    else:
+        Client('127.0.0.1', 46000).start()
+        fenetre.destroy()
 
 
 
@@ -42,13 +62,13 @@ entrerPrenom = Entry(frame2)
 entrerPrenom.place(x=350,y=350,width=300, height=30)
 labelMail = Label(frame2, text = "Mail", font=('Arial', 15))
 labelMail.place(x=250,y=400)
-entrerMail = Entry(frame2)
-entrerMail.place(x=350,y=400,width=300, height=30)
+entrerMailInscription = Entry(frame2)
+entrerMailInscription.place(x=350,y=400,width=300, height=30)
 labelMdp = Label(frame2, text = "Password", font=('Arial', 15))
 labelMdp.place(x=250,y=450)
-entrerMdp = Entry(frame2)
-entrerMdp.place(x=350,y=450,width=300, height=30)
-buttonInscription = Button(frame2, text = "Inscription", font=('Arial', 15), command=lambda : returnToConnexion(frame1, frame2))
+entrerMdpInscription = Entry(frame2)
+entrerMdpInscription.place(x=350,y=450,width=300, height=30)
+buttonInscription = Button(frame2, text = "Inscription", font=('Arial', 15), command=lambda: returnToConnexion(frame1, frame2))
 buttonInscription.place(x=350, y= 500, width=300)
 frame2.pack_forget()
 
@@ -67,7 +87,7 @@ labelMdp = Label(frame1, text = "Password", font=('Arial', 15))
 labelMdp.place(x=250,y=350)
 entrerMdp = Entry(frame1, show="*")
 entrerMdp.place(x=350,y=350,width=300, height=30)
-buttonConnexion = Button(frame1, text = "Connexion", font=('Arial', 15), command=lambda : Client('127.0.0.1', 46000).start())
+buttonConnexion = Button(frame1, text = "Connexion", font=('Arial', 15), command=lambda:connexion(fenetre))
 buttonConnexion.place(x=350, y= 400, width=300)
 
 LabelInscription = Label(frame1, text = "Pas encore inscrit ?", font=('Arial', 10))
