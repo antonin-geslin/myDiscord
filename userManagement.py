@@ -12,9 +12,8 @@ class userManagement():
         self.cursor = self.connexion.cursor()
 
 
-
-
     def userInscription(self, nom, prenom, mail, password):
+        print(f"Inserting user: nom={nom}, prenom={prenom}, mail={mail}, password={password}")
         query = ("INSERT INTO user (nom, prenom, mail, password) VALUES (%s, %s, %s, %s)")
         values = (nom, prenom, mail, password)
         self.cursor.execute(query, values)
@@ -29,3 +28,5 @@ class userManagement():
         query = f"SELECT password FROM user WHERE mail = '{mail}'"
         self.cursor.execute(query)
         return(self.cursor.fetchall()[0][0])
+
+

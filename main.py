@@ -2,8 +2,11 @@ from tkinter import *
 from tkinter import ttk
 from userManagement import userManagement
 from testchat import *
+import re 
+import json 
 
 bdd = userManagement('discord', 'abcdeABCDE;12345', 'mydiscord')
+
 
 def inscription(frame1,frame2):
 
@@ -25,8 +28,8 @@ def returnToConnexion(frame1, frame2):
         labelError = Label(frame2, text = "Mail invalide", font=('Arial', 15))
         labelError.place(x=450,y=600)
 
-
 def connexion(fenetre):
+
     mail = entrerMail.get()
     password = entrerMdp.get()
     if bdd.checkIfUserExist(mail) == []:
@@ -36,10 +39,35 @@ def connexion(fenetre):
         labelError = Label(frame1, text = "Mot de passe incorrect", font=('Arial', 15))
         labelError.place(x=450,y=600)
     else:
-        Client('127.0.0.1', 46000).start()
-        fenetre.destroy()
+            try:
+                with open('id_count.json', 'r') as file:
+                    id_count = json.load(file)['id_count']
+            except FileNotFoundError:
+                id_count = 1
 
+            # Ajoute un nouvel utilisateur avec l'id courant
+            entry = {
+                'user': str(mail),
+                'id': str(id_count)
+            }
+            id_count += 1
 
+            # Enregistre la nouvelle valeur de id_count dans le fichier
+            with open('id_count.json', 'w') as file:
+                json.dump({'id_count': id_count}, file)
+
+            # Charge les données actuelles du fichier messages.json
+            with open('messages.json', 'r') as file:
+                data = json.load(file)
+
+            # Ajoute la nouvelle entrée à la fin de la liste de données
+            data.append(entry)
+
+            # Enregistre les données mises à jour dans le fichier messages.json
+            with open('messages.json', 'w') as file:
+                json.dump(data, file)
+            Client('127,0,0,1', 50000).start()
+            fenetre.destroy()
 
 fenetre=Tk()
 fenetre.title("myDiscord")
@@ -95,9 +123,5 @@ LabelInscription.place(x=400,y=440)
 buttonInscription = Button(frame1, text = "Cliquez ici !", font=('Arial', 10), command=lambda: inscription(frame1, frame2))
 buttonInscription.place(x=490, y= 437)
 
-def connexion():
-    if bdd.userConnexion == True:
-        client = Client('127.0.0.1', 46000)
-        client.start()
 
 fenetre.mainloop()

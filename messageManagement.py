@@ -1,3 +1,7 @@
+
+import mysql
+import mysql.connector
+
 class MessageManagement():
 
 
@@ -22,3 +26,4 @@ class MessageManagement():
         query = ("SELECT user, message FROM messages")
         self.cursor.execute(query)
         return(self.cursor.fetchall())
+    

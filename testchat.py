@@ -2,17 +2,19 @@ import socket
 import threading
 import tkinter as tk
 import sys
-from userManagement import userManagement
+from messageManagement import * 
+import json 
+
+bd2 = MessageManagement("discord", "abcdeABCDE;12345", "mydiscord")
 
 class Client:
     def __init__(self, host, port):
-        self.host = host
-        self.port = port
+        self.host = '127.0.0.1'
+        self.port =     50000
         self.connexion = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
         self.input_texte = None
         self.messages_listbox = None
         self.connected_users_listbox = None
-        self.user_management = ('discord', 'abcdeABCDE;12345', 'mydiscord')
 
     def connect(self):
         try:
@@ -23,18 +25,22 @@ class Client:
         print("Connexion établie avec le serveur.")
 
     def send_message(self):
+        with open('messages.json', 'r') as f:
+            data = json.load(f)
         message = self.input_texte.get()
+        message2 = self.input_texte.get()
         self.connexion.send(message.encode())
         self.input_texte.delete(0, tk.END)
         self.messages_listbox.insert(tk.END, message)
+        bd2.addMessageToBdd(data[-1]['user'], message2)
 
-    
+
     def receive_messages(self):
         while True:
-            message = self.connexion.recv(1024).decode()
+            message =  self.connexion.recv(1024).decode()
             if self.messages_listbox and self.messages_listbox.size():
                 self.messages_listbox.insert(tk.END, message)
-        
+
 
     def start(self):
         self.connect()
@@ -62,7 +68,9 @@ class ChatWindow(tk.Tk):
         self.client.messages_listbox = tk.Listbox(messages_frame, height=25, width=100, yscrollcommand=messages_scrollbar.set)
         self.client.messages_listbox.pack(side=tk.LEFT, fill=tk.BOTH)
         messages_frame.pack(side=tk.LEFT, padx=10)
-    
+        for row in bd2.getAllMessages():
+           self.client.messages_listbox.insert(tk.END, row[0] + " : " + row[1])
+
 
         # création de la liste des utilisateurs connectés
         connected_users_frame = tk.Frame(self)
@@ -93,7 +101,6 @@ class ChatWindow(tk.Tk):
         salons_frame.pack(side=tk.RIGHT, padx=10, pady=10)
 
 
-
 if __name__ == "__main__":
-    client = Client('localhost', 46000)
+    client = Client("localhost", 50000)
     client.start()

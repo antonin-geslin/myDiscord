@@ -2,10 +2,11 @@
 #Utilise les threads pour gérer les connexions clientes en parallèle.
 
 import socket, sys, threading
+import json
+import userManagement
 
 HOST = '127.0.0.1'
-PORT = 46000
-
+PORT = 50000
 
 salons = {"salon1":[], "salon2":[], "salon3":[]}
 
@@ -14,18 +15,25 @@ class ThreadClient(threading.Thread):
     def __init__(self, conn):
         threading.Thread.__init__(self)
         self.connexion = conn
+    
+
         #ref du socket de connexion
 
+        
     def run(self):
         #Dialogue avec le client 
         nom = self.getName()
-        #Chaque thread possède un nom
 
-        while 1:
-            msgClient = self.connexion.recv(1024).decode("Utf8")
+        with open('messages.json', 'r') as f:
+            data = json.load(f)
+            mail = data[-1]['user']
+        
+        #Chaque thread possède un nom
+        while True:
+            msgClient = self.connexion.recv(1024).decode("Utf8") 
             if not msgClient or msgClient.upper() == "FIN" :
                 break
-            message = "%s> %s" % (nom, msgClient)
+            message = "%s : %s" %(mail, msgClient)
             print(message)
         # Faire suivre le message à tous les autres clients :
             for cle in list(conn_client):
@@ -52,11 +60,9 @@ conn_client = {}
 
 while 1:
     connexion, adresse = mySocket.accept()
-
     #créer un nouvel objet tread pour gérer la connexion:
     th = ThreadClient(connexion)
     th.start()
-
     #mémoriser la connexion dans le dictionnaire:
     it = th.getName() #identifiant du thread
     conn_client[it] = connexion
@@ -66,3 +72,4 @@ while 1:
     #dialgue avec le client:
     msg = "Vous êtes connecté.envoyez vos messages."
     connexion.send(msg.encode("Utf8"))
+
