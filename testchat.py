@@ -4,13 +4,12 @@ import tkinter as tk
 import sys
 from messageManagement import * 
 import json 
-
 bd2 = MessageManagement("discord", "abcdeABCDE;12345", "mydiscord")
 
 class Client:
     def __init__(self, host, port):
         self.host = '127.0.0.1'
-        self.port =     50000
+        self.port =    50000
         self.connexion = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
         self.input_texte = None
         self.messages_listbox = None
@@ -24,6 +23,8 @@ class Client:
             sys.exit()
         print("Connexion établie avec le serveur.")
 
+    
+
     def send_message(self):
         with open('messages.json', 'r') as f:
             data = json.load(f)
@@ -31,8 +32,6 @@ class Client:
         message2 = self.input_texte.get()
         self.connexion.send(message.encode())
         self.input_texte.delete(0, tk.END)
-        self.messages_listbox.insert(tk.END, message)
-        bd2.addMessageToBdd(data[-1]['user'], message2)
 
 
     def receive_messages(self):
@@ -40,6 +39,13 @@ class Client:
             message =  self.connexion.recv(1024).decode()
             if self.messages_listbox and self.messages_listbox.size():
                 self.messages_listbox.insert(tk.END, message)
+
+    
+    def list_user(self):
+        with open('messages.json', 'r') as f:
+            data = json.load(f)
+            connected_users = data[-1]['user']
+        self.client.connected_users_listbox.insert(tk.END, connected_users)
 
 
     def start(self):
@@ -58,6 +64,7 @@ class ChatWindow(tk.Tk):
         tk.Tk.__init__(self)
         self.client = client
         self.title("Client Chat")
+        self.connected_users_listbox = []
         self.create_widgets()
 
     def create_widgets(self):
@@ -70,7 +77,6 @@ class ChatWindow(tk.Tk):
         messages_frame.pack(side=tk.LEFT, padx=10)
         for row in bd2.getAllMessages():
            self.client.messages_listbox.insert(tk.END, row[0] + " : " + row[1])
-
 
         # création de la liste des utilisateurs connectés
         connected_users_frame = tk.Frame(self)

@@ -1,5 +1,4 @@
 from tkinter import *
-from tkinter import ttk
 from userManagement import userManagement
 from testchat import *
 import re 
@@ -29,13 +28,18 @@ def returnToConnexion(frame1, frame2):
         labelError.place(x=450,y=600)
 
 def connexion(fenetre):
-
     mail = entrerMail.get()
     password = entrerMdp.get()
-    if bdd.checkIfUserExist(mail) == []:
+    if mail == "" or password == "":
+        labelError = Label(frame1, text = "Veuillez remplir tous les champs", font=('Arial', 15))
+        labelError.place(x=450,y=600)
+    elif bdd.checkIfUserExist(mail) == []:
+        labelError = Label(frame1, text = "", font=('Arial', 15))
         labelError = Label(frame1, text = "Mail inconnu", font=('Arial', 15))
         labelError.place(x=450,y=600)
     elif bdd.checkUserPassword(mail) != password:
+        labelError = Label(frame1, text = "", font=('Arial', 15))
+
         labelError = Label(frame1, text = "Mot de passe incorrect", font=('Arial', 15))
         labelError.place(x=450,y=600)
     else:
@@ -66,7 +70,8 @@ def connexion(fenetre):
             # Enregistre les données mises à jour dans le fichier messages.json
             with open('messages.json', 'w') as file:
                 json.dump(data, file)
-            Client('127,0,0,1', 50000).start()
+
+            Client('127.0.0.1', 50000).start()
             fenetre.destroy()
 
 fenetre=Tk()
@@ -121,7 +126,7 @@ buttonConnexion.place(x=350, y= 400, width=300)
 LabelInscription = Label(frame1, text = "Pas encore inscrit ?", font=('Arial', 10))
 LabelInscription.place(x=400,y=440)
 buttonInscription = Button(frame1, text = "Cliquez ici !", font=('Arial', 10), command=lambda: inscription(frame1, frame2))
-buttonInscription.place(x=490, y= 437)
+buttonInscription.place(x=530, y= 437)
 
 
 fenetre.mainloop()
