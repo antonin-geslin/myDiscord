@@ -6,6 +6,34 @@ import json
 
 bdd = userManagement('discord', 'abcdeABCDE;12345', 'mydiscord')
 
+def fetch_data():
+    db = mysql.connector.connect(
+        host = 'localhost',
+        user = 'discord',
+        password = 'abcdeABCDE;12345',
+        database = 'mydiscord'
+    )       
+    cursor = db.cursor()
+    sql = "SELECT * FROM users"
+    cursor.execute(sql)
+    result = cursor.fetchall()
+    return result
+
+
+def fetch_data2():
+    db = mysql.connector.connect(
+        host = 'localhost',
+        user = 'discord',
+        password = 'abcdeABCDE;12345',
+        database = 'mydiscord'
+    )
+    cursor = db.cursor()
+    sql = "SELECT * FROM messages"
+    cursor.execute(sql)
+    result2 = cursor.fetchall()
+    return result2
+
+
 
 def inscription(frame1,frame2):
 
